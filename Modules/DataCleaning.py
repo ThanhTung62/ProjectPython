@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+<<<<<<< HEAD
 def clean_and_save_weather_data():
     # Đường dẫn file code đang chạy
     currentDir = os.path.dirname(__file__)  
@@ -8,6 +9,10 @@ def clean_and_save_weather_data():
     # Đường dẫn đến file CSV ban đầu và file CSV mới
     dataPath = os.path.join(currentDir, '../Data/EnglandWeather.csv')
     newDataPath = os.path.join(currentDir, '../Data/EnglandWeather2.csv')
+=======
+pd.set_option('display.max_columns', None)  # Hiển thị tất cả các cột
+pd.set_option('display.width', 130)        # Đặt chiều rộng hiển thị
+>>>>>>> 1993491c8735d8917ca6645d8e12e4fd8b648014
 
     # Đọc dữ liệu từ file CSV
     df = pd.read_csv(dataPath)
