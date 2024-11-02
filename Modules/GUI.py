@@ -25,13 +25,21 @@ def clear_window():
     for widget in window.winfo_children():
         widget.destroy()  # Xóa tất cả widget trên cửa sổ
 
+
+# Đường dẫn file code đang chạy
+currentDir = os.path.dirname(__file__)  
+
+# Đường dẫn đến file CSV ban đầu và file CSV mới
+newDataPath = os.path.join(currentDir, '../Data/MangHinhCho.ico')
+
+
 # Thiết lập cửa sổ
 window.title("Weather in England")
 window.geometry("800x600")
-window.iconbitmap(r"D:\project\python\Data\MangHinhCho.ico")  # Icon cho cửa sổ
+window.iconbitmap(newDataPath)  # Icon cho cửa sổ
 
 # Tạo hình nền từ file ảnh .ico
-bg_image = Image.open(r"D:\project\python\Data\MangHinhCho.ico")
+bg_image = Image.open(newDataPath)
 bg_image = bg_image.resize((800, 600), Image.LANCZOS)  # Điều chỉnh kích thước ảnh
 bg_photo = ImageTk.PhotoImage(bg_image)
 
