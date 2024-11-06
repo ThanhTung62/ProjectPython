@@ -2,9 +2,6 @@ import pandas as pd
 import os
 from datetime import datetime
 
-pd.set_option('display.max_columns', None)  # Hiển thị tất cả các cột
-pd.set_option('display.width', 130)        # Đặt chiều rộng hiển thị
-
 currentDir = os.path.dirname(__file__)  # Đường dẫn file code đang chạy
 dataPath = os.path.join(currentDir, '../Data/EnglandWeather.csv')  # Đường dẫn đến file CSV
 

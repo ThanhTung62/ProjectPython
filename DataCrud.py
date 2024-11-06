@@ -42,9 +42,9 @@ def createEntry():
     except Exception as e:
         print(f"Có lỗi xảy ra: {e}")
 
-print(data.tail(5))
-createEntry()
-print(data.tail(5))
+# print(data.tail(5))
+# createEntry()
+# print(data.tail(5))
 
 def readData():
     print("Dữ liệu hiện tại:")
