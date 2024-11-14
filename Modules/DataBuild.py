@@ -8,10 +8,10 @@ from DataCrud import sortData, createEntry, updateEntry, deleteEntry, readData
 import webbrowser
 
 def openYouTubeVideo1():
-    webbrowser.open("https://youtube.com/shorts/-dtPT6CJREI?si=RBEJtUaq4tkRHzl2")
+    webbrowser.open("https://youtu.be/H43glfbQEh4?si=XEcJG55kZ8x5ySaZ")
 
 def openYouTubeVideo2():
-    webbrowser.open("https://youtube.com/shorts/AnDWq-jA54M?si=69Fq35E5sSbijnJ2")
+    webbrowser.open("https://youtu.be/sApvDcSNUkw?si=KI9KxdiEkokcnZZ9")
 
 # Đường dẫn file code đang chạy
 currentDir = os.path.dirname(__file__)  
@@ -62,42 +62,67 @@ def searchDate():
     else:
         updateTable()  # Nếu không có tìm kiếm, hiển thị lại toàn bộ dữ liệu
 
+def showRowInfo(event):
+    # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
+    selected_item = tree.selection()
+    if selected_item:
+        row_data = tree.item(selected_item)["values"]
+        index = row_data[0]  # Lấy index của dòng được chọn
+        row_details = row_data[1:]  # Lấy các giá trị khác của dòng
+
+        # Hiển thị thông tin vắng tắt trong một cửa sổ nhỏ (popup)
+        info_text = f"Index: {index}\n"
+        info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
+        
+        messagebox.showinfo("Thông tin dòng", info_text)
+
+#Chức năng thể hiện tóm tắt thông tin:
+def showRowInfo(event):
+    # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
+    selected_item = tree.selection()
+    if selected_item:
+        row_data = tree.item(selected_item)["values"]
+        index = row_data[0]  # Lấy index của dòng được chọn
+        row_details = row_data[1:]  # Lấy các giá trị khác của dòng
+
+        # Hiển thị thông tin vắn tắt trong một cửa sổ nhỏ (popup)
+        info_text = f"Index: {index}\n"
+        info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
+        
+        messagebox.showinfo("Thông tin dòng", info_text)
+
+
+
 def main():
     window = tk.Tk()
     window.title("Weather Data Management")
     window.state('zoomed')  # Mở cửa sổ toàn màn hình
-    
-    # Thiết lập màu nền tổng thể và hình ảnh thời tiết
+
     window.configure(bg="#e3f2fd")  # Bầu trời xanh nhạt
 
     def exitApp():
-        # Ẩn cửa sổ chính
         window.withdraw()
 
-    # Tạo style cho Treeview
     style = ttk.Style(window)
     style.theme_use("clam")
-    
-    # Cập nhật màu sắc cho Treeview theo chủ đề thời tiết
+
     style.configure("Treeview", 
-                    background="#ffffff",  # Nền bảng trắng
-                    foreground="#212529",  # Màu chữ đen xám
+                    background="#ffffff",
+                    foreground="#212529",
                     rowheight=25,
-                    fieldbackground="#ffffff",  # Nền trắng cho các ô
+                    fieldbackground="#ffffff", 
                     borderwidth=2,  
                     relief="solid")  
     
-    # Tiêu đề với màu xanh trời cho phù hợp chủ đề thời tiết
     style.configure("Treeview.Heading", 
-                    background="#1e88e5",  # Màu nền xanh dương
+                    background="#1e88e5",  
                     foreground="white",  
-                    font=("Arial", 10, "bold"))  
+                    font=("Arial", 10, "bold"))
 
     style.map('Treeview', 
-              background=[('selected', '#64b5f6')],  # Màu xanh nhẹ khi chọn dòng
+              background=[('selected', '#64b5f6')],
               foreground=[('selected', '#ffffff')])  
 
-    # Tạo widget Treeview để hiển thị dữ liệu
     frame = ttk.Frame(window)
     frame.pack(fill="both", expand=True, padx=20, pady=20)
 
@@ -105,26 +130,22 @@ def main():
     tree = ttk.Treeview(frame, columns=["Index"] + list(data.columns), show="headings", height=15)
     tree.pack(side="left", fill="both", expand=True)
 
-    # Thêm thanh cuộn cho Treeview
     scrollbar_y = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
     tree.configure(yscroll=scrollbar_y.set)
     scrollbar_y.pack(side="right", fill="y")
 
-    # Thiết lập tiêu đề cột
     tree.heading("Index", text="Index")
     tree.column("Index", width=50, anchor='center')
-    # for col in data.columns:
-    #     tree.heading(col, text=col)
-    #     tree.column(col, width=100, anchor='center')
+    
     for col in data.columns:
-        tree.heading(col, text=col, command=lambda _col=col: sortData(_col))  # Gán sự kiện nhấp vào cột
+        tree.heading(col, text=col, command=lambda _col=col: sortData(_col))
         tree.column(col, width=100, anchor='center')
 
-
-    # Tải dữ liệu ban đầu vào bảng
     updateTable()
 
-    # Tạo ô tìm kiếm và nút tìm kiếm
+    #Chức năng thể hiện tóm tắt thông tin:
+    tree.bind("<Double-1>", showRowInfo)
+
     search_frame = ttk.Frame(window)
     search_frame.pack(pady=10)
     
@@ -138,7 +159,6 @@ def main():
     search_button = ttk.Button(search_frame, text="Find", command=searchDate)
     search_button.pack(side="left", padx=10)
 
-    # Tạo các nút cho từng thao tác
     button_frame = ttk.Frame(window)
     button_frame.pack(pady=10)
 
@@ -160,21 +180,16 @@ def main():
     show_all_button = ttk.Button(search_frame, text="Show all", command=lambda: updateTable())
     show_all_button.pack(side="left", padx=10)
 
-    # Trong hàm main, thêm các nút vào giao diện:
     youtube_button_frame = ttk.Frame(window)
     youtube_button_frame.pack(pady=10)
 
-    # Tạo nút mở video YouTube 1
-    youtube_button1 = ttk.Button(youtube_button_frame, text="Rain", command=openYouTubeVideo1)
+    youtube_button1 = ttk.Button(youtube_button_frame, text="Tiếng mưa rơi ở nước Anh cực chill", command=openYouTubeVideo1)
     youtube_button1.pack(side="left", padx=10)
 
-    # Tạo nút mở video YouTube 2
-    youtube_button2 = ttk.Button(youtube_button_frame, text="Snow", command=openYouTubeVideo2)
+    youtube_button2 = ttk.Button(youtube_button_frame, text="Cảnh vật nưóc Anh dưới tuyết tuyệt đẹp", command=openYouTubeVideo2)
     youtube_button2.pack(side="left", padx=10)
 
-    window.mainloop()  # Bắt đầu vòng lặp chính của GUI
-
-    
+    window.mainloop()
 
 if __name__ == "__main__":
-    main()  # Gọi hàm main để chạy ứng dụng
+    main()

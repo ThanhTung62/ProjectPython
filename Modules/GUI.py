@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 import webbrowser
 
 def openYouTubeVideo1():
-    webbrowser.open("https://youtube.com/shorts/ZAdwX7ELWPY?si=Y-_O65bEmxHAGEwz")
+    webbrowser.open("https://youtu.be/bHHZEWhXJ9c?si=OMBu9f44kwcsEOww")
 
 # Tạo file đã được clean
 filePath = clean_and_save_weather_data()
@@ -94,8 +94,16 @@ youtube_button_frame = Frame(window)
 youtube_button_frame.pack(pady=10)
 
 # Create a button to open the YouTube video
-youtube_button1 = Button(youtube_button_frame, text="Intro", command=openYouTubeVideo1)
+youtube_button1 = Button(
+    youtube_button_frame,
+    text="Thời tiết hôm nay ở nước Anh",
+    command=openYouTubeVideo1,
+    bg="lightblue",  # Nền xanh nhạt
+    fg="black",      # Chữ màu trắng
+    font=("Arial", 12, "bold")  # Chữ to hơn một chút (12 và đậm)
+)
 youtube_button1.pack(side="left", padx=10)
+
 
 
 # Chạy vòng lặp chính
