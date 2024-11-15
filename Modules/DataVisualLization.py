@@ -75,6 +75,13 @@ def show_max_humidity():
     ax.set_title('Average Humidity by Summary')
     canvas.draw()
 
+def show_heatmap():
+    ax.clear()
+    correlation_matrix = df_plot[['Temperature (C)', 'Wind Speed (km/h)', 'Pressure (millibars)', 'Humidity']].corr()
+    sns.heatmap(correlation_matrix, annot=True, cmap="YlOrBr", ax=ax)
+    ax.set_title('Correlation Heatmap', fontsize=16)
+    canvas.draw()
+
 # Main GUI function
 def create_gui():
     global canvas, ax, figure
@@ -102,7 +109,8 @@ def create_gui():
     Button(button_frame, text="Month Count", command=show_month_count, width=25, height=2, bg="#90caf9", fg="black").grid(row=1, column=0, pady=5)
     Button(button_frame, text="Precip Type", command=show_precip_type, width=25, height=2, bg="#90caf9", fg="black").grid(row=2, column=0, pady=5)
     Button(button_frame, text="Max Humidity", command=show_max_humidity, width=25, height=2, bg="#90caf9", fg="black").grid(row=3, column=0, pady=5)
-    Button(button_frame, text="Exit", command=exit_app, width=25, height=2, bg="#ff8a80", fg="white").grid(row=4, column=0, pady=5)
+    Button(button_frame, text="Heatmap", command=show_heatmap, width=25, height=2, bg="#90caf9", fg="black").grid(row=4, column=0, pady=5)
+    Button(button_frame, text="Exit", command=exit_app, width=25, height=2, bg="#ff8a80", fg="white").grid(row=5, column=0, pady=5)
 
     # Frame cho Canvas với nền trong suốt, tạo sự kết nối với nền tổng thể
     canvas_frame = tk.Frame(root, bg="#bbdefb")
