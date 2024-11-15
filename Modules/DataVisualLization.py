@@ -41,14 +41,22 @@ month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', '
 
 # Plotting functions
 def show_summary_count():
-    ax.clear()
+    global canvas, figure, ax
+    # Xóa toàn bộ figure
+    figure.clf()
+    # Tạo lại trục mới
+    ax = figure.add_subplot(111)
     sns.countplot(y='Summary', data=df_plot, palette="YlOrBr", ax=ax)
     ax.set_title('Summary Count', fontsize=16)
     plt.xticks(rotation=90)
     canvas.draw()
 
 def show_month_count():
-    ax.clear()
+    global canvas, figure, ax
+    # Xóa toàn bộ figure
+    figure.clf()
+    # Tạo lại trục mới
+    ax = figure.add_subplot(111)
     sns.countplot(x='month', data=df_plot, palette="YlOrBr", ax=ax)
     ax.set_xticks(np.arange(12))
     ax.set_xticklabels(month_names, rotation=90)
@@ -56,15 +64,22 @@ def show_month_count():
     canvas.draw()
 
 def show_precip_type():
-    ax.clear()
+    global canvas, figure, ax
+    # Xóa toàn bộ figure
+    figure.clf()
+    # Tạo lại trục mới
+    ax = figure.add_subplot(111)
     sns.countplot(y='Precip_Type', data=df_plot, palette="YlOrBr", ax=ax)
     ax.set_title('Precip Type Count', fontsize=16)
     plt.xticks(rotation = 90)
     canvas.draw()
 
 def show_max_humidity():
-    global canvas, ax
-    ax.clear()
+    global canvas, figure, ax
+    # Xóa toàn bộ figure
+    figure.clf()
+    # Tạo lại trục mới
+    ax = figure.add_subplot(111)
     max_humidity_by_summary = df_plot.groupby('Summary')['Humidity'].mean().sort_values(ascending=False)
     order = max_humidity_by_summary.index.tolist()
     sns.barplot(x='Humidity', y='Summary', data=df_plot, order=order, palette='YlOrBr', ax=ax)
@@ -76,9 +91,15 @@ def show_max_humidity():
     canvas.draw()
 
 def show_heatmap():
-    ax.clear()
+    global canvas, figure, ax
+    # Xóa toàn bộ figure
+    figure.clf()
+    # Tạo lại trục mới
+    ax = figure.add_subplot(111)
     correlation_matrix = df_plot[['Temperature (C)', 'Wind Speed (km/h)', 'Pressure (millibars)', 'Humidity']].corr()
+    # Vẽ heatmap lên trục mới
     sns.heatmap(correlation_matrix, annot=True, cmap="YlOrBr", ax=ax)
+    # Đặt tiêu đề cho heatmap
     ax.set_title('Correlation Heatmap', fontsize=16)
     canvas.draw()
 
