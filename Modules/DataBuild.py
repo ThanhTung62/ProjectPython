@@ -3,7 +3,7 @@ from tkinter import messagebox, simpledialog
 from tkinter import ttk
 import pandas as pd
 import os
-from DataCrud import sortData, createEntry, updateEntry, deleteEntry, readData
+from DataCrud import createEntry, updateEntry, deleteEntry, readData, getData
 
 import webbrowser
 
@@ -13,30 +13,24 @@ def openYouTubeVideo1():
 def openYouTubeVideo2():
     webbrowser.open("https://youtu.be/sApvDcSNUkw?si=KI9KxdiEkokcnZZ9")
 
-# Đường dẫn file code đang chạy
-currentDir = os.path.dirname(__file__)  
-
-# Đường dẫn đến file CSV ban đầu và file CSV mới
-dataPath = os.path.join(currentDir, '../Data/EnglandWeather.csv')
-newDataPath = os.path.join(currentDir, '../Data/EnglandWeather2.csv')
-
-# Tải dữ liệu từ file CSV
-data = pd.read_csv(newDataPath)
-
 # Thiết lập các tùy chọn hiển thị của Pandas
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
 
+data = getData()
 sort_order = {col: True for col in data.columns}  # Mặc định là tăng dần (True)
 
 def sortData(column):
-    global data, sort_order
-    # Sắp xếp dữ liệu theo cột và thứ tự sắp xếp
+    global sort_order,data
+    # Sắp xếp dữ liệu theo cột và thứ tự sắp xếp hiện tại
     data = data.sort_values(by=column, ascending=sort_order[column]).reset_index(drop=True)
-    sort_order[column] = not sort_order[column]  # Đổi thứ tự sắp xếp cho lần nhấp tiếp theo
-    updateTable()  # Cập nhật bảng hiển thị sau khi sắp xếp
+    # Đổi thứ tự sắp xếp cho lần nhấp tiếp theo
+    sort_order[column] = not sort_order[column]
+    # Cập nhật bảng sau khi sắp xếp
+    updateTable(data)
 
 def updateTable(filtered_data=None):
+    data = getData()
     # Xóa dữ liệu hiện tại từ Treeview
     for row in tree.get_children():
         tree.delete(row)
@@ -50,6 +44,7 @@ def updateTable(filtered_data=None):
 
 def searchDate():
     search_value = search_entry.get().strip()
+    data = getData()
     # Kiểm tra nếu ô tìm kiếm có giá trị
     if search_value:
         # Lọc dữ liệu theo giá trị trong cột "Date"
@@ -126,7 +121,7 @@ def main():
     frame = ttk.Frame(window)
     frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-    global tree
+    global tree,data
     tree = ttk.Treeview(frame, columns=["Index"] + list(data.columns), show="headings", height=15)
     tree.pack(side="left", fill="both", expand=True)
 
@@ -162,16 +157,16 @@ def main():
     button_frame = ttk.Frame(window)
     button_frame.pack(pady=10)
 
-    create_button = ttk.Button(button_frame, text="Create", command=lambda: (updateTable(createEntry(data))))
+    create_button = ttk.Button(button_frame, text="Create", command=lambda: (updateTable(createEntry())))
     create_button.pack(side="left", padx=10)
 
-    update_button = ttk.Button(button_frame, text="Update", command=lambda: (updateEntry(data), updateTable(data)))
+    update_button = ttk.Button(button_frame, text="Update", command=lambda: (updateTable(updateEntry())))
     update_button.pack(side="left", padx=10)
 
-    delete_button = ttk.Button(button_frame, text="Delete", command=lambda: (updateTable(deleteEntry(data))))
+    delete_button = ttk.Button(button_frame, text="Delete", command=lambda: (updateTable(deleteEntry())))
     delete_button.pack(side="left", padx=10)
 
-    read_button = ttk.Button(button_frame, text="Info", command=lambda: readData(data))
+    read_button = ttk.Button(button_frame, text="Info", command=lambda: readData())
     read_button.pack(side="left", padx=10)
 
     exit_button = ttk.Button(button_frame, text="Exit", command=exitApp)

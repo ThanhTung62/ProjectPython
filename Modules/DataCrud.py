@@ -1,14 +1,23 @@
 import pandas as pd
 from tkinter import messagebox, simpledialog
-
+import os
 # Đảm bảo biến data được truyền vào khi cần thiết
-def sortData(data, column, sort_order):
-    # Sắp xếp dữ liệu theo cột và thứ tự sắp xếp
-    data = data.sort_values(by=column, ascending=sort_order[column]).reset_index(drop=True)
-    sort_order[column] = not sort_order[column]  # Đổi thứ tự sắp xếp cho lần nhấp tiếp theo
+
+# Đường dẫn file code đang chạy
+currentDir = os.path.dirname(__file__)  
+
+# Đường dẫn đến file CSV ban đầu và file CSV mới
+dataPath = os.path.join(currentDir, '../Data/EnglandWeather.csv')
+newDataPath = os.path.join(currentDir, '../Data/EnglandWeather2.csv')
+
+# Tải dữ liệu từ file CSV
+data = pd.read_csv(newDataPath)
+
+def getData():
     return data
 
-def createEntry(data):
+def createEntry():
+    global data
     try:
         # Nhập dữ liệu từ người dùng thông qua hộp thoại
         formatted_date = simpledialog.askstring("Input", "Nhập ngày (Formatted Date):")
@@ -42,16 +51,21 @@ def createEntry(data):
         messagebox.showerror("Error", f"Có lỗi xảy ra: {e}")
         return data
 
-def updateEntry(data):
+def updateEntry():
+    global data
     try:
         # Nhập chỉ số dòng và tên cột cần cập nhật
         index = int(simpledialog.askinteger("Input", "Nhập chỉ số dòng bạn muốn cập nhật:"))
-        column = simpledialog.askstring("Input", "Nhập tên cột muốn cập nhật:")
-        if column in data.columns and 0 <= index < len(data):
-            new_value = simpledialog.askstring("Input", f"Nhập giá trị mới cho {column}:")
+        column = simpledialog.askstring("Input", "Nhập tên cột muốn cập nhật:").lower()  # Chuyển tên cột nhập vào thành chữ thường
+        # Tạo danh sách các cột ở dạng chữ thường để so sánh
+        columns_lower = [col.lower() for col in data.columns]
+        if column in columns_lower and 0 <= index < len(data):
+            # Lấy tên cột ban đầu từ danh sách columns
+            original_column = data.columns[columns_lower.index(column)]
+            new_value = simpledialog.askstring("Input", f"Nhập giá trị mới cho {original_column}:")
             if new_value:
-                data.at[index, column] = new_value  # Cập nhật giá trị mới
-                messagebox.showinfo("Success", f"Đã cập nhật {column} tại dòng {index} thành {new_value}.")
+                data.at[index, original_column] = new_value  # Cập nhật giá trị mới
+                messagebox.showinfo("Success", f"Đã cập nhật {original_column} tại dòng {index} thành {new_value}.")
             else:
                 messagebox.showwarning("Invalid Input", "Giá trị mới không hợp lệ. Vui lòng nhập một giá trị không rỗng.")
         else:
@@ -62,7 +76,8 @@ def updateEntry(data):
         messagebox.showerror("Error", f"Có lỗi xảy ra: {e}")
     return data
 
-def deleteEntry(data):
+def deleteEntry():
+    global data
     try:
         # Nhập chỉ số dòng cần xóa
         index = int(simpledialog.askinteger("Input", "Nhập chỉ số dòng bạn muốn xóa:"))
@@ -78,7 +93,8 @@ def deleteEntry(data):
         messagebox.showerror("Error", f"Có lỗi xảy ra: {e}")
     return data
 
-def readData(data):
+def readData():
+    global data
     # Hiển thị thông tin về DataFrame
     info_str = f"\nThông tin DataFrame:\n{data.info(buf=None)}"
     missing_values = f"\nSố lượng giá trị thiếu trong mỗi cột:\n{data.isna().sum()}"
