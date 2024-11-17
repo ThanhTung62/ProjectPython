@@ -1,6 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
-from tkinter import ttk
+from tkinter import messagebox, simpledialog, Toplevel, Label, Button, ttk
 import pandas as pd
 import os
 from DataCrud import createEntry, updateEntry, deleteEntry, readData, getData
@@ -57,36 +56,53 @@ def searchDate():
     else:
         updateTable()  # Nếu không có tìm kiếm, hiển thị lại toàn bộ dữ liệu
 
+# #Chức năng thể hiện tóm tắt thông tin:
+# def showRowInfo(event):
+#     # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
+#     selected_item = tree.selection()
+#     if selected_item:
+#         row_data = tree.item(selected_item)["values"]
+#         index = row_data[0]  # Lấy index của dòng được chọn
+#         row_details = row_data[1:]  # Lấy các giá trị khác của dòng
+
+#         # Hiển thị thông tin vắn tắt trong một cửa sổ nhỏ (popup)
+#         info_text = f"Index: {index}\n"
+#         info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
+        
+#         messagebox.showinfo("Thông tin dòng", info_text)
+
 def showRowInfo(event):
-    # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
     selected_item = tree.selection()
     if selected_item:
         row_data = tree.item(selected_item)["values"]
-        index = row_data[0]  # Lấy index của dòng được chọn
-        row_details = row_data[1:]  # Lấy các giá trị khác của dòng
-
-        # Hiển thị thông tin vắng tắt trong một cửa sổ nhỏ (popup)
-        info_text = f"Index: {index}\n"
-        info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
         
-        messagebox.showinfo("Thông tin dòng", info_text)
-
-#Chức năng thể hiện tóm tắt thông tin:
-def showRowInfo(event):
-    # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
-    selected_item = tree.selection()
-    if selected_item:
-        row_data = tree.item(selected_item)["values"]
-        index = row_data[0]  # Lấy index của dòng được chọn
-        row_details = row_data[1:]  # Lấy các giá trị khác của dòng
-
-        # Hiển thị thông tin vắn tắt trong một cửa sổ nhỏ (popup)
-        info_text = f"Index: {index}\n"
-        info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
+        # Tạo số thứ tự (STT) từ chỉ số của item trong treeview
+        stt_value = row_data[0]  # Lấy giá trị của cột "Ngày" làm giá trị cho cột STT
         
-        messagebox.showinfo("Thông tin dòng", info_text)
+        # Lấy giá trị cột "Ngày" (là cột thứ hai trong row_data sau cột STT)
+        date_value = row_data[1]  # Lấy cột "Ngày" từ dòng đã chọn
+        
+        # Các giá trị còn lại từ dòng đã chọn (bỏ cột "Ngày")
+        row_details = row_data[2:]  # Bỏ cột "Ngày" ra khỏi dữ liệu
 
+        # Tạo chuỗi thông tin để hiển thị
+        info_text = f"Thông tin thời tiết:\n\n"
+        info_text += f"STT: {stt_value}\n"  # Hiển thị số thứ tự lấy từ cột "Ngày"
+        info_text += f"Ngày: {date_value}\n"  # Hiển thị ngày từ cột "Ngày"
+        
+        # Hiển thị các giá trị của các cột còn lại
+        info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns[2:], row_details)])
 
+        # Tạo cửa sổ popup để hiển thị thông tin
+        popup = Toplevel()
+        popup.title("Thông tin thời tiết")
+        popup.geometry("400x250")
+
+        lbl_info = Label(popup, text=info_text, justify='left', font=('Times New Roman', 14), fg="darkblue", bg="lightyellow")
+        lbl_info.pack(pady=10, padx=10)
+
+        btn_close = Button(popup, text="Đóng", command=popup.destroy, font=('Times New Roman', 14), bg="lightcoral")
+        btn_close.pack(pady=10)
 
 def main():
     window = tk.Tk()

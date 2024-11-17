@@ -3,7 +3,6 @@ import os
 from tkinter import *
 from PIL import Image, ImageTk
 
-
 import webbrowser
 
 def openYouTubeVideo1():
