@@ -56,21 +56,6 @@ def searchDate():
     else:
         updateTable()  # Nếu không có tìm kiếm, hiển thị lại toàn bộ dữ liệu
 
-# #Chức năng thể hiện tóm tắt thông tin:
-# def showRowInfo(event):
-#     # Lấy dòng mà người dùng nhấp vào (index đầu tiên)
-#     selected_item = tree.selection()
-#     if selected_item:
-#         row_data = tree.item(selected_item)["values"]
-#         index = row_data[0]  # Lấy index của dòng được chọn
-#         row_details = row_data[1:]  # Lấy các giá trị khác của dòng
-
-#         # Hiển thị thông tin vắn tắt trong một cửa sổ nhỏ (popup)
-#         info_text = f"Index: {index}\n"
-#         info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns, row_details)])
-        
-#         messagebox.showinfo("Thông tin dòng", info_text)
-
 def showRowInfo(event):
     selected_item = tree.selection()
     if selected_item:
@@ -103,6 +88,35 @@ def showRowInfo(event):
 
         btn_close = Button(popup, text="Đóng", command=popup.destroy, font=('Times New Roman', 14), bg="lightcoral")
         btn_close.pack(pady=10)
+
+def openNote():
+    # Đường dẫn tới file notes.txt
+    note_file = "notes.txt"
+
+    # Tạo cửa sổ note
+    note_window = Toplevel()
+    note_window.title("Ghi chú")
+    note_window.geometry("400x300")
+
+    # Tạo Text widget để hiển thị và chỉnh sửa nội dung
+    text_area = tk.Text(note_window, wrap="word", font=("Arial", 12))
+    text_area.pack(fill="both", expand=True, padx=10, pady=10)
+
+    # Nếu file tồn tại, đọc nội dung vào Text widget
+    if os.path.exists(note_file):
+        with open(note_file, "r", encoding="utf-8") as file:
+            content = file.read()
+            text_area.insert("1.0", content)
+
+    # Hàm lưu ghi chú
+    def saveNote():
+        with open(note_file, "w", encoding="utf-8") as file:
+            file.write(text_area.get("1.0", "end").strip())
+
+    # Nút lưu ghi chú
+    save_button = Button(note_window, text="Lưu", command=saveNote, font=("Arial", 12), bg="lightblue")
+    save_button.pack(pady=10)
+
 
 def main():
     window = tk.Tk()
@@ -199,6 +213,9 @@ def main():
 
     youtube_button2 = ttk.Button(youtube_button_frame, text="Cảnh vật nưóc Anh dưới tuyết tuyệt đẹp", command=openYouTubeVideo2)
     youtube_button2.pack(side="left", padx=10)
+
+    note_button = ttk.Button(button_frame, text="Note", command=openNote)
+    note_button.pack(side="left", padx=10)
 
     window.mainloop()
 
