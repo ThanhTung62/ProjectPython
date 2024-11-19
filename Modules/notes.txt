@@ -1,2 +1,8 @@
-Cai con cak
-m thich gi
+Xin chào thầy xin mời thầy xem các chức năng tiêu biểu:
+Create: tạo dữ liệu mới
+Update: cập nhật dữ liệu
+Delete: xóa dữ liệu
+Info: Thông tin cơ bản của dữ liệu
+Sort: sắp xếp tăng dần rồi giảm dần
+Tóm tắt: tóm gọn thông tin cua 1 dòng bất kì
+Note: ghi chú

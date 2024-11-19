@@ -2,59 +2,60 @@ from DataCleaning import clean_and_save_weather_data
 import os
 from tkinter import *
 from PIL import Image, ImageTk
+import DataBuild 
+import DataVisualLization 
 
 import webbrowser
 
 def openYouTubeVideo1():
+    """Dùng để truy cập đến một đường link"""
     webbrowser.open("https://youtu.be/bHHZEWhXJ9c?si=OMBu9f44kwcsEOww")
 
-# Tạo file đã được clean
+# Tạo file đã được clean bằng file DataCleaning
 filePath = clean_and_save_weather_data()
 
-import DataBuild  # Import DataBuild.py để có thể gọi giao diện từ file này
-import DataVisualLization  # Import DataVisualLization.py
-
 def openDataBuild():
-    DataBuild.main()  # Gọi hàm main từ DataBuild.py để mở giao diện
+    """Gọi hàm main từ DataBuild.py để mở giao diện"""
+    DataBuild.main() 
 
 def openDataVisualLization():
-    DataVisualLization.create_gui()  # Gọi hàm show_chart từ DataVisualLization.py
+    """Gọi hàm show_chart từ DataVisualLization.py"""
+    DataVisualLization.create_gui()  
 
 window = Tk()
 window.geometry("800x600")
 
-# Hàm hiển thị giao diện "Data View" với nút quay lại
 def show_data_view():
+    """Hàm hiển thị giao diện Data View"""
     clear_window()
     lb1 = Label(window, text="Data View", font=('Times New Roman', 20, 'bold'))
     lb1.pack(pady=20)
     
     # Nút để quay lại giao diện chính
-    btn_back = Button(window, text="Quay lại", font=('Times New Roman', 17, 'bold'), command=show_main_view)
-    btn_back.pack(pady=20)
+    btnBack = Button(window, text="Quay lại", font=('Times New Roman', 17, 'bold'), command=show_main_view)
+    btnBack.pack(pady=20)
 
-# Hàm hiển thị giao diện "Chart View" với nút quay lại
 def show_chart_view():
+    """Hàm hiển thị giao diện Chart View"""
     clear_window()
     lb1 = Label(window, text="Chart View", font=('Times New Roman', 20, 'bold'))
     lb1.pack(pady=20)
     
     # Nút để quay lại giao diện chính
-    btn_back = Button(window, text="Quay lại", font=('Times New Roman', 17, 'bold'), command=show_main_view)
-    btn_back.pack(pady=20)
+    btnBack = Button(window, text="Quay lại", font=('Times New Roman', 17, 'bold'), command=show_main_view)
+    btnBack.pack(pady=20)
 
-# Hàm thoát chương trình
 def exit_program():
+    """Hàm thoát chương trình"""
     window.quit()
 
-# Hàm xóa tất cả các widget trên cửa sổ
 def clear_window():
+    """Hàm xóa tất cả các widget trên cửa sổ"""
     for widget in window.winfo_children():
         widget.destroy()
 
-# Hàm hiển thị giao diện chính với các nút điều khiển
 def show_main_view():
-    
+    """Hàm hiển thị giao diện chính với các nút điều khiển"""
     # Tiêu đề
     lb1 = Label(window, text="Weather in England", font=('Times New Roman', 25, 'bold'), fg='green')
     lb1.config(bg=window.cget('bg'))
@@ -74,27 +75,27 @@ def show_main_view():
 currentDir = os.path.dirname(__file__)  
 
 # Đường dẫn đến file ảnh nền
-bg_image_path = os.path.join(currentDir, '../Data/MangHinhCho.jpg')
+bgImage_path = os.path.join(currentDir, '../Data/MangHinhCho.jpg')
 
 # Tạo hình nền từ file ảnh .ico
-bg_image = Image.open(bg_image_path)
-bg_image = bg_image.resize((window.winfo_screenwidth(), window.winfo_screenheight()), Image.LANCZOS)
-bg_photo = ImageTk.PhotoImage(bg_image)
+bgImage = Image.open(bgImage_path)
+bgImage = bgImage.resize((window.winfo_screenwidth(), window.winfo_screenheight()), Image.LANCZOS)
+bg_photo = ImageTk.PhotoImage(bgImage)
 
 # Đặt ảnh làm nền
-bg_label = Label(window, image=bg_photo)
-bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+bgIabel = Label(window, image=bg_photo)
+bgIabel.place(x=0, y=0, relwidth=1, relheight=1)
 
 # Hiển thị giao diện chính
 show_main_view()
 
 # Create a frame to hold YouTube buttons
-youtube_button_frame = Frame(window)
-youtube_button_frame.pack(pady=10)
+youtubeButton = Frame(window)
+youtubeButton.pack(pady=10)
 
 # Create a button to open the YouTube video
 youtube_button1 = Button(
-    youtube_button_frame,
+    youtubeButton,
     text="Thời tiết hôm nay ở nước Anh",
     command=openYouTubeVideo1,
     bg="lightblue",  # Nền xanh nhạt
@@ -102,8 +103,6 @@ youtube_button1 = Button(
     font=("Arial", 12, "bold")  # Chữ to hơn một chút (12 và đậm)
 )
 youtube_button1.pack(side="left", padx=10)
-
-
 
 # Chạy vòng lặp chính
 window.mainloop()

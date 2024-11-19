@@ -3,28 +3,34 @@ from tkinter import messagebox, simpledialog, Toplevel, Label, Button, ttk
 import pandas as pd
 import os
 from DataCrud import createEntry, updateEntry, deleteEntry, readData, getData
-
 import webbrowser
 
 def openYouTubeVideo1():
+    """Dùng để truy cập đến một đường link"""
     webbrowser.open("https://youtu.be/H43glfbQEh4?si=XEcJG55kZ8x5ySaZ")
 
 def openYouTubeVideo2():
+    """Dùng để truy cập đến một đường link"""
     webbrowser.open("https://youtu.be/sApvDcSNUkw?si=KI9KxdiEkokcnZZ9")
 
 # Thiết lập các tùy chọn hiển thị của Pandas
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 1000)
+pd.setOption('display.max_columns', None)
+pd.setOption('display.width', 1000)
 
 data = getData()
-sort_order = {col: True for col in data.columns}  # Mặc định là tăng dần (True)
+sortOrder = {col: True for col in data.columns}  # Mặc định là tăng dần (True)
 
 def sortData(column):
-    global sort_order,data
+    """Click lần đầu là sort tăng dần, click cái nữa là giảm dần"""
+    #Biến toàn cục
+    global sortOrder,data
+
     # Sắp xếp dữ liệu theo cột và thứ tự sắp xếp hiện tại
-    data = data.sort_values(by=column, ascending=sort_order[column]).reset_index(drop=True)
+    data = data.sort_values(by=column, ascending=sortOrder[column]).reset_index(drop=True)
+
     # Đổi thứ tự sắp xếp cho lần nhấp tiếp theo
-    sort_order[column] = not sort_order[column]
+    sortOrder[column] = not sortOrder[column]
+    
     # Cập nhật bảng sau khi sắp xếp
     updateTable(data)
 
@@ -57,8 +63,10 @@ def searchDate():
         updateTable()  # Nếu không có tìm kiếm, hiển thị lại toàn bộ dữ liệu
 
 def showRowInfo(event):
+    """Gọi ra 1 cửa sổ hiện vắn tắt thông tin"""
     selected_item = tree.selection()
     if selected_item:
+        #lấy danh sách các giá trị từ các cột của hàng được chọn
         row_data = tree.item(selected_item)["values"]
         
         # Tạo số thứ tự (STT) từ chỉ số của item trong treeview
