@@ -14,8 +14,8 @@ def openYouTubeVideo2():
     webbrowser.open("https://youtu.be/sApvDcSNUkw?si=KI9KxdiEkokcnZZ9")
 
 # Thiết lập các tùy chọn hiển thị của Pandas
-pd.setOption('display.max_columns', None)
-pd.setOption('display.width', 1000)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 1000)
 
 data = getData()
 sortOrder = {col: True for col in data.columns}  # Mặc định là tăng dần (True)
@@ -99,7 +99,11 @@ def showRowInfo(event):
 
 def openNote():
     # Đường dẫn tới file notes.txt
-    note_file = "notes.txt"
+    # Đường dẫn file code đang chạy
+    currentDir = os.path.dirname(__file__)  
+
+    # Đường dẫn đến file ảnh nền
+    note_file = os.path.join(currentDir, '../Data/notes.txt')
 
     # Tạo cửa sổ note
     note_window = Toplevel()
