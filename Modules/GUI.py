@@ -2,8 +2,7 @@ from DataCleaning import clean_and_save_weather_data
 import os
 from tkinter import *
 from PIL import Image, ImageTk
-import DataBuild 
-import DataVisualLization 
+
 
 import webbrowser
 
@@ -13,6 +12,9 @@ def openYouTubeVideo1():
 
 # Tạo file đã được clean bằng file DataCleaning
 filePath = clean_and_save_weather_data()
+
+import DataBuild 
+import DataVisualLization 
 
 def openDataBuild():
     """Gọi hàm main từ DataBuild.py để mở giao diện"""
