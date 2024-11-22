@@ -4,6 +4,14 @@ from tkinter import *
 from PIL import Image, ImageTk
 import webbrowser
 import time
+import pygame
+
+def play_background_music():
+    pygame.mixer.init()  # Khởi tạo pygame mixer
+    music_file = os.path.join(currentDir, '../Data/background_music.mp3')  # Đường dẫn đến tệp nhạc
+    pygame.mixer.music.load(music_file)  # Tải tệp nhạc
+    pygame.mixer.music.set_volume(1)  # Thiết lập âm lượng (0.0 đến 1.0)
+    pygame.mixer.music.play(-1)  # Phát lặp lại (-1 nghĩa là lặp vô hạn)
 
 def openYouTubeVideo1():
     """Dùng để truy cập đến một đường link"""
@@ -112,6 +120,9 @@ def show_main_view():
 
 # Đường dẫn file code đang chạy
 currentDir = os.path.dirname(__file__)  
+
+# Phát nhạc nền
+play_background_music()
 
 # Đường dẫn đến file ảnh nền
 bgImage_path = os.path.join(currentDir, '../Data/abc.png')
