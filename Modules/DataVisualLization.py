@@ -103,6 +103,15 @@ def show_heatmap():
     ax.set_title('Correlation Heatmap', fontsize=16)
     canvas.draw()
 
+# Hover effect functions
+def on_enter(event, button):
+    button['bg'] = '#ff8a80'  # Change button color on hover
+    button['fg'] = 'white'
+
+def on_leave(event, button):
+    button['bg'] = '#90caf9'  # Revert button color when mouse leaves
+    button['fg'] = 'black'
+
 # Main GUI function
 def create_gui():
     global canvas, ax, figure
@@ -126,12 +135,111 @@ def create_gui():
     button_frame = tk.Frame(root, bg="#e3f2fd")  # Màu xanh nhạt
     button_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
     
-    Button(button_frame, text="Summary Count", command=show_summary_count, width=25, height=2, bg="#90caf9", fg="black").grid(row=0, column=0, pady=5)
-    Button(button_frame, text="Month Count", command=show_month_count, width=25, height=2, bg="#90caf9", fg="black").grid(row=1, column=0, pady=5)
-    Button(button_frame, text="Precip Type", command=show_precip_type, width=25, height=2, bg="#90caf9", fg="black").grid(row=2, column=0, pady=5)
-    Button(button_frame, text="Max Humidity", command=show_max_humidity, width=25, height=2, bg="#90caf9", fg="black").grid(row=3, column=0, pady=5)
-    Button(button_frame, text="Heatmap", command=show_heatmap, width=25, height=2, bg="#90caf9", fg="black").grid(row=4, column=0, pady=5)
-    Button(button_frame, text="Exit", command=exit_app, width=25, height=2, bg="#ff8a80", fg="white").grid(row=5, column=0, pady=5)
+    # Tạo các nút với hiệu ứng
+    button1 = tk.Button(button_frame, text="Summary Count", command=show_summary_count, width=25, height=2, bg="#90caf9", fg="black")
+    button1.grid(row=0, column=0, pady=5)
+    button1.bind("<Enter>", lambda event, button=button1: on_enter(event, button))
+    button1.bind("<Leave>", lambda event, button=button1: on_leave(event, button))
+
+    button2 = tk.Button(button_frame, text="Month Count", command=show_month_count, width=25, height=2, bg="#90caf9", fg="black")
+    button2.grid(row=1, column=0, pady=5)
+    button2.bind("<Enter>", lambda event, button=button2: on_enter(event, button))
+    button2.bind("<Leave>", lambda event, button=button2: on_leave(event, button))
+
+    button3 = tk.Button(button_frame, text="Precip Type", command=show_precip_type, width=25, height=2, bg="#90caf9", fg="black")
+    button3.grid(row=2, column=0, pady=5)
+    button3.bind("<Enter>", lambda event, button=button3: on_enter(event, button))
+    button3.bind("<Leave>", lambda event, button=button3: on_leave(event, button))
+
+    button4 = tk.Button(button_frame, text="Max Humidity", command=show_max_humidity, width=25, height=2, bg="#90caf9", fg="black")
+    button4.grid(row=3, column=0, pady=5)
+    button4.bind("<Enter>", lambda event, button=button4: on_enter(event, button))
+    button4.bind("<Leave>", lambda event, button=button4: on_leave(event, button))
+
+    button5 = tk.Button(button_frame, text="Heatmap", command=show_heatmap, width=25, height=2, bg="#90caf9", fg="black")
+    button5.grid(row=4, column=0, pady=5)
+    button5.bind("<Enter>", lambda event, button=button5: on_enter(event, button))
+    button5.bind("<Leave>", lambda event, button=button5: on_leave(event, button))
+
+    button6 = tk.Button(button_frame, text="Exit", command=exit_app, width=25, height=2, bg="#ff8a80", fg="white")
+    button6.grid(row=5, column=0, pady=5)
+    button6.bind("<Enter>", lambda event, button=button6: on_enter(event, button))
+    button6.bind("<Leave>", lambda event, button=button6: on_leave(event, button))
+
+    # Frame cho Canvas với nền trong suốt
+def on_enter(event, button):
+    button.config(bg="#81d4fa", relief="sunken", borderwidth=2)  # Đổi nền và tạo chiều sâu nút khi hover
+    button.config(cursor="hand2")  # Hiệu ứng trỏ chuột tay
+
+def on_leave(event, button):
+    button.config(bg="#90caf9", relief="raised", borderwidth=0)  # Quay lại kiểu mặc định
+
+def create_gui():
+    global canvas, ax, figure
+    root = tk.Tk()
+    root.title("Weather Data Visualization")
+
+    def exit_app():
+        root.quit()
+        root.destroy()
+
+    # Fullscreen toggle
+    root.attributes("-fullscreen", True)
+    root.bind("<Escape>", lambda e: root.attributes("-fullscreen", False))
+
+    # Cấu hình lưới cho bố cục giao diện
+    root.grid_rowconfigure(0, weight=1)
+    root.grid_columnconfigure(0, weight=1, minsize=200)
+    root.grid_columnconfigure(1, weight=4)
+
+    # Frame cho các nút với màu nền nhẹ nhàng
+    button_frame = tk.Frame(root, bg="#e3f2fd")  # Màu xanh nhạt
+    button_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+    
+   # Tạo các nút với hiệu ứng
+
+    def on_enter(event, button):
+        # Khi chuột vào, thay đổi màu nền nút
+        button.config(bg="#81c784")  # Ví dụ, nền sáng hơn khi hover
+
+    def on_leave(event, button):
+        # Khi chuột rời, kiểm tra nếu đây là nút Exit, giữ màu nền đỏ
+        if button['text'] == "Exit":
+            button.config(bg="red")
+        else:
+            button.config(bg="#90caf9")  # Màu nền mặc định
+
+
+    button1 = tk.Button(button_frame, text="Summary Count", command=show_summary_count, width=25, height=2, bg="#90caf9", fg="black", font=("Helvetica", 12, "bold"))
+    button1.grid(row=0, column=0, pady=5)
+    button1.bind("<Enter>", lambda event, button=button1: on_enter(event, button))
+    button1.bind("<Leave>", lambda event, button=button1: on_leave(event, button))
+
+    button2 = tk.Button(button_frame, text="Month Count", command=show_month_count, width=25, height=2, bg="#90caf9", fg="black", font=("Helvetica", 12, "bold"))
+    button2.grid(row=1, column=0, pady=5)
+    button2.bind("<Enter>", lambda event, button=button2: on_enter(event, button))
+    button2.bind("<Leave>", lambda event, button=button2: on_leave(event, button))
+
+    button3 = tk.Button(button_frame, text="Precip Type", command=show_precip_type, width=25, height=2, bg="#90caf9", fg="black", font=("Helvetica", 12, "bold"))
+    button3.grid(row=2, column=0, pady=5)
+    button3.bind("<Enter>", lambda event, button=button3: on_enter(event, button))
+    button3.bind("<Leave>", lambda event, button=button3: on_leave(event, button))
+
+    button4 = tk.Button(button_frame, text="Max Humidity", command=show_max_humidity, width=25, height=2, bg="#90caf9", fg="black", font=("Helvetica", 12, "bold"))
+    button4.grid(row=3, column=0, pady=5)
+    button4.bind("<Enter>", lambda event, button=button4: on_enter(event, button))
+    button4.bind("<Leave>", lambda event, button=button4: on_leave(event, button))
+
+    button5 = tk.Button(button_frame, text="Heatmap", command=show_heatmap, width=25, height=2, bg="#90caf9", fg="black", font=("Helvetica", 12, "bold"))
+    button5.grid(row=4, column=0, pady=5)
+    button5.bind("<Enter>", lambda event, button=button5: on_enter(event, button))
+    button5.bind("<Leave>", lambda event, button=button5: on_leave(event, button))
+
+    button6 = tk.Button(button_frame, text="Exit", command=exit_app, width=25, height=2, bg="red", fg="white", font=("Helvetica", 12, "bold"))
+    button6.grid(row=5, column=0, pady=5)
+    button6.bind("<Enter>", lambda event, button=button6: on_enter(event, button))
+    button6.bind("<Leave>", lambda event, button=button6: on_leave(event, button))
+
 
     # Frame cho Canvas với nền trong suốt, tạo sự kết nối với nền tổng thể
     canvas_frame = tk.Frame(root, bg="#bbdefb")

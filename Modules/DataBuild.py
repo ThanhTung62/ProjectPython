@@ -89,7 +89,7 @@ def showRowInfo(event):
         # Tạo cửa sổ popup để hiển thị thông tin
         popup = Toplevel()
         popup.title("Thông tin thời tiết")
-        popup.geometry("400x250")
+        popup.geometry("300x300")
 
         lbl_info = Label(popup, text=info_text, justify='left', font=('Times New Roman', 14), fg="darkblue", bg="lightyellow")
         lbl_info.pack(pady=10, padx=10)
