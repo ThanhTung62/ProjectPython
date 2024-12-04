@@ -9,7 +9,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Assuming the file path is valid
 currentDir = os.path.dirname(__file__)
-dataPath = os.path.join(currentDir, '../Data/EnglandWeather.csv')
+dataPath = os.path.join(currentDir, '../Data/EnglandWeather2.csv')
 df = pd.read_csv(dataPath)
 
 # Helper function for seasons
