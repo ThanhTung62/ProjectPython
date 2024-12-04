@@ -11,17 +11,6 @@ currentDir = os.path.dirname(__file__)
 dataPath = os.path.join(currentDir, '../Data/EnglandWeather2.csv')
 df = pd.read_csv(dataPath)
 
-# Helper function for seasons
-def get_season(month):
-    if month in [12, 1, 2]:
-        return 'Winter'
-    elif month in [3, 4, 5]:
-        return 'Spring'
-    elif month in [6, 7, 8]:
-        return 'Summer'
-    else:
-        return 'Autumn'
-
 df.fillna('rain', inplace=True)
 df[['date', 'time']] = df['Formatted Date'].str.split(' ', n=1, expand=True)
 df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
@@ -30,7 +19,6 @@ df['month'] = df['date'].dt.month
 df['day'] = df['date'].dt.day
 df['hour'] = pd.to_numeric(df['time'].str[:2], errors='coerce').fillna(0).astype(int)  # Extract hour correctly
 df['Humidity'] = df['Humidity'] * 100
-df['season'] = df['month'].apply(get_season)
 
 # Create a simpler DataFrame for plotting
 df_plot = df.copy()
