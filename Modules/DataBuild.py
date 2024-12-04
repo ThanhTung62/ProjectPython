@@ -13,80 +13,88 @@ def openYouTubeVideo2():
     """Dùng để truy cập đến một đường link"""
     webbrowser.open("https://youtu.be/sApvDcSNUkw?si=KI9KxdiEkokcnZZ9")
 
-# Thiết lập các tùy chọn hiển thị của Pandas
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
 
 data = getData()
-sortOrder = {col: True for col in data.columns}  # Mặc định là tăng dần (True)
+sortOrder = {col: True for col in data.columns}
 
 def sortData(column):
-    """Click lần đầu là sort tăng dần, click cái nữa là giảm dần"""
-    #Biến toàn cục
-    global sortOrder,data
+    global sortOrder, data
 
-    # Sắp xếp dữ liệu theo cột và thứ tự sắp xếp hiện tại
     data = data.sort_values(by=column, ascending=sortOrder[column]).reset_index(drop=True)
-
-    # Đổi thứ tự sắp xếp cho lần nhấp tiếp theo
     sortOrder[column] = not sortOrder[column]
     
-    # Cập nhật bảng sau khi sắp xếp
-    updateTable(data)
+    updateTable()
 
-def updateTable(filtered_data=None):
-    data = getData()
-    # Xóa dữ liệu hiện tại từ Treeview
+def updateTable():
     for row in tree.get_children():
         tree.delete(row)
 
-    # Sử dụng dữ liệu đã lọc nếu có, nếu không sử dụng dữ liệu gốc
-    display_data = filtered_data if filtered_data is not None else data
+    display_data = data.iloc[(current_page-1)*items_per_page:current_page*items_per_page]
 
-    # Chèn dữ liệu đã cập nhật từ DataFrame vào Treeview
     for index, row in display_data.iterrows():
         tree.insert("", "end", values=[index] + list(row))
 
+def nextPage():
+    global current_page, max_page
+    if current_page < max_page:
+        current_page += 1
+        updateTable()
+        page_label.config(text=f"Page {current_page} of {max_page}")
+
+def prevPage():
+    global current_page
+    if current_page > 1:
+        current_page -= 1
+        updateTable()
+        page_label.config(text=f"Page {current_page} of {max_page}")
+
+def firstPage():
+    global current_page
+    current_page = 1
+    updateTable()
+    page_label.config(text=f"Page {current_page} of {max_page}")
+
+def lastPage():
+    global current_page, max_page
+    current_page = max_page
+    updateTable()
+    page_label.config(text=f"Page {current_page} of {max_page}")
+
 def searchDate():
     search_value = search_entry.get().strip()
-    data = getData()
-    # Kiểm tra nếu ô tìm kiếm có giá trị
+    global data
+    data = getData()  # Làm mới dữ liệu từ nguồn
+
     if search_value:
-        # Lọc dữ liệu theo giá trị trong cột "Date"
+        # Chuyển đổi dữ liệu 'Date' thành chuỗi nếu nó chưa phải là chuỗi
         filtered_data = data[data['Date'].astype(str).str.contains(search_value, case=False, na=False)]
         if not filtered_data.empty:
-            updateTable(filtered_data)  # Cập nhật bảng với kết quả tìm kiếm
+            data = filtered_data  # Cập nhật lại dữ liệu với kết quả lọc
+            updateTable()  # Cập nhật bảng với dữ liệu lọc
         else:
             messagebox.showinfo("Thông báo", "Không tìm thấy dữ liệu với giá trị Date đó.")
-            updateTable()  # Nếu không tìm thấy, hiển thị lại toàn bộ dữ liệu
+            updateTable()  # Cập nhật lại bảng dù không có kết quả tìm thấy
     else:
-        updateTable()  # Nếu không có tìm kiếm, hiển thị lại toàn bộ dữ liệu
+        updateTable()  # Nếu ô tìm kiếm rỗng, cập nhật lại bảng với dữ liệu ban đầu
 
 def showRowInfo(event):
-    """Gọi ra 1 cửa sổ hiện vắn tắt thông tin"""
     selected_item = tree.selection()
     if selected_item:
-        #lấy danh sách các giá trị từ các cột của hàng được chọn
         row_data = tree.item(selected_item)["values"]
         
-        # Tạo số thứ tự (STT) từ chỉ số của item trong treeview
-        stt_value = row_data[0]  # Lấy giá trị của cột "Ngày" làm giá trị cho cột STT
-        
-        # Lấy giá trị cột "Ngày" (là cột thứ hai trong row_data sau cột STT)
-        date_value = row_data[1]  # Lấy cột "Ngày" từ dòng đã chọn
-        
-        # Các giá trị còn lại từ dòng đã chọn (bỏ cột "Ngày")
-        row_details = row_data[2:]  # Bỏ cột "Ngày" ra khỏi dữ liệu
+        stt_value = row_data[0]
+        date_value = row_data[1]
+        pre_value = row_data[2]
+        row_details = row_data[3:]
 
-        # Tạo chuỗi thông tin để hiển thị
         info_text = f"Thông tin thời tiết:\n\n"
-        info_text += f"STT: {stt_value}\n"  # Hiển thị số thứ tự lấy từ cột "Ngày"
-        info_text += f"Ngày: {date_value}\n"  # Hiển thị ngày từ cột "Ngày"
-        
-        # Hiển thị các giá trị của các cột còn lại
+        info_text += f"STT: {stt_value}\n"
+        info_text += f"Ngày: {date_value}\n"
+        info_text += f"Loai thoi tiet: {pre_value}\n"
         info_text += "\n".join([f"{col}: {val}" for col, val in zip(data.columns[2:], row_details)])
 
-        # Tạo cửa sổ popup để hiển thị thông tin
         popup = Toplevel()
         popup.title("Thông tin thời tiết")
         popup.geometry("300x300")
@@ -98,44 +106,57 @@ def showRowInfo(event):
         btn_close.pack(pady=10)
 
 def openNote():
-    # Đường dẫn tới file notes.txt
-    # Đường dẫn file code đang chạy
-    currentDir = os.path.dirname(__file__)  
-
-    # Đường dẫn đến file ảnh nền
+    currentDir = os.path.dirname(__file__)
     note_file = os.path.join(currentDir, '../Data/notes.txt')
 
-    # Tạo cửa sổ note
     note_window = Toplevel()
     note_window.title("Ghi chú")
     note_window.geometry("400x300")
 
-    # Tạo Text widget để hiển thị và chỉnh sửa nội dung
     text_area = tk.Text(note_window, wrap="word", font=("Arial", 12))
     text_area.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # Nếu file tồn tại, đọc nội dung vào Text widget
     if os.path.exists(note_file):
         with open(note_file, "r", encoding="utf-8") as file:
             content = file.read()
             text_area.insert("1.0", content)
 
-    # Hàm lưu ghi chú
     def saveNote():
         with open(note_file, "w", encoding="utf-8") as file:
             file.write(text_area.get("1.0", "end").strip())
 
-    # Nút lưu ghi chú
     save_button = Button(note_window, text="Lưu", command=saveNote, font=("Arial", 12), bg="lightblue")
     save_button.pack(pady=10)
 
+def createEntryAndUpdate():
+    createEntry(window)  # Gọi hàm tạo dữ liệu mới
+    global data
+    data = getData()  # Làm mới dữ liệu từ nguồn
+    updateTable()  # Cập nhật bảng hiển thị
+
+def deleteEntryAndUpdate():
+    deleteEntry(window)  # Gọi hàm xóa dữ liệu
+    global data
+    data = getData()  # Làm mới dữ liệu từ nguồn
+    updateTable()  # Cập nhật bảng hiển thị
+
+def updateEntryAndUpdate():
+    updateEntry(window)  # Gọi hàm tạo dữ liệu mới
+    global data
+    data = getData()  # Làm mới dữ liệu từ nguồn
+    updateTable()  # Cập nhật bảng hiển thị
+
+def showAllAndUpdate():
+    global data
+    data = getData()  # Lấy toàn bộ dữ liệu
+    updateTable()  # Cập nhật bảng hiển thị
 
 def main():
+    global window 
     window = tk.Tk()
     window.title("Weather Data Management")
-    window.state('zoomed')  # Mở cửa sổ toàn màn hình
-
-    window.configure(bg="#e3f2fd")  # Bầu trời xanh nhạt
+    window.state('zoomed')
+    window.configure(bg="#e3f2fd")
 
     def exitApp():
         window.withdraw()
@@ -147,23 +168,28 @@ def main():
                     background="#ffffff",
                     foreground="#212529",
                     rowheight=25,
-                    fieldbackground="#ffffff", 
+                    fieldbackground="#ffffff",
                     borderwidth=2,  
                     relief="solid")  
     
     style.configure("Treeview.Heading", 
-                    background="#1e88e5",  
-                    foreground="white",  
+                    background="#1e88e5",
+                    foreground="white",
                     font=("Arial", 10, "bold"))
 
     style.map('Treeview', 
               background=[('selected', '#64b5f6')],
-              foreground=[('selected', '#ffffff')])  
+              foreground=[('selected', '#ffffff')])
 
     frame = ttk.Frame(window)
     frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-    global tree,data
+    global tree, current_page, items_per_page, max_page, page_label, data
+
+    items_per_page = 20
+    current_page = 1
+    max_page = (len(data) // items_per_page) + 1
+
     tree = ttk.Treeview(frame, columns=["Index"] + list(data.columns), show="headings", height=15)
     tree.pack(side="left", fill="both", expand=True)
 
@@ -180,7 +206,6 @@ def main():
 
     updateTable()
 
-    #Chức năng thể hiện tóm tắt thông tin:
     tree.bind("<Double-1>", showRowInfo)
 
     search_frame = ttk.Frame(window)
@@ -199,23 +224,42 @@ def main():
     button_frame = ttk.Frame(window)
     button_frame.pack(pady=10)
 
-    create_button = ttk.Button(button_frame, text="Create", command=lambda: (updateTable(createEntry())))
+    create_button = ttk.Button(button_frame, text="Create", command=createEntryAndUpdate)
     create_button.pack(side="left", padx=10)
 
-    update_button = ttk.Button(button_frame, text="Update", command=lambda: (updateTable(updateEntry())))
+    update_button = ttk.Button(button_frame, text="Update", command=updateEntryAndUpdate)
     update_button.pack(side="left", padx=10)
 
-    delete_button = ttk.Button(button_frame, text="Delete", command=lambda: (updateTable(deleteEntry())))
+    delete_button = ttk.Button(button_frame, text="Delete", command=deleteEntryAndUpdate)
     delete_button.pack(side="left", padx=10)
 
-    read_button = ttk.Button(button_frame, text="Info", command=lambda: readData())
+    read_button = ttk.Button(button_frame, text="Info", command=lambda: readData(window))
+    read_button.pack(side="left", padx=10)
     read_button.pack(side="left", padx=10)
 
     exit_button = ttk.Button(button_frame, text="Exit", command=exitApp)
     exit_button.pack(side="left", padx=10)
 
-    show_all_button = ttk.Button(search_frame, text="Show all", command=lambda: updateTable())
+    show_all_button = ttk.Button(search_frame, text="Show all", command=showAllAndUpdate)
     show_all_button.pack(side="left", padx=10)
+
+    page_frame = ttk.Frame(window)
+    page_frame.pack(pady=10)
+
+    first_button = ttk.Button(page_frame, text="First", command=firstPage)
+    first_button.pack(side="left", padx=10)
+
+    prev_button = ttk.Button(page_frame, text="Previous", command=prevPage)
+    prev_button.pack(side="left", padx=10)
+
+    page_label = ttk.Label(page_frame, text=f"Page {current_page} of {max_page}", background="#e3f2fd")
+    page_label.pack(side="left", padx=10)
+
+    next_button = ttk.Button(page_frame, text="Next", command=nextPage)
+    next_button.pack(side="left", padx=10)
+
+    last_button = ttk.Button(page_frame, text="Last", command=lastPage)
+    last_button.pack(side="left", padx=10)
 
     youtube_button_frame = ttk.Frame(window)
     youtube_button_frame.pack(pady=10)
