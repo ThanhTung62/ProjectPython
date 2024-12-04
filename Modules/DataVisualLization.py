@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tkinter as tk
-from tkinter import Button
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Assuming the file path is valid
